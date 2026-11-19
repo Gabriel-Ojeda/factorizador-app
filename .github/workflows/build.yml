@@ -25,6 +25,7 @@ jobs:
             git \
             zip \
             unzip \
+            wget \
             openjdk-17-jdk \
             python3-pip \
             autoconf \
@@ -55,13 +56,15 @@ jobs:
 
     - name: Configurar Android SDK y Build-Tools
       run: |
-        mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-        unzip -q cmdline-tools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools
-        mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+        SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
+        mkdir -p "$SDK_DIR/cmdline-tools" "$SDK_DIR/tools"
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+        unzip -q cmdline-tools.zip -d "$SDK_DIR/cmdline-tools"
+        mv "$SDK_DIR/cmdline-tools/cmdline-tools" "$SDK_DIR/cmdline-tools/latest"
         rm cmdline-tools.zip
-        yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.2" "platforms;android-33" "platform-tools"
+        ln -sfn "$SDK_DIR/cmdline-tools/latest/bin" "$SDK_DIR/tools/bin"
+        yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" --licenses || true
+        yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Compilar APK con Buildozer
       run: |
