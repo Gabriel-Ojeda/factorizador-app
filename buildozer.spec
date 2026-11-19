@@ -13,5 +13,6 @@ android.minapi = 21
 android.ndk = 25b
 android.sdk = 33
 android.buildtools = 33.0.2
+android.accept_sdk_license = True
 p4a.branch = master
 source.dir = .
