@@ -13,3 +13,4 @@ android.minapi = 21
 android.ndk = 25b
 android.sdk = 30
 p4a.branch = master
+source.dir = .
